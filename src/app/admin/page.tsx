@@ -34,21 +34,15 @@ import {
 import Link from 'next/link';
 
 // Custom Durian SVG Badge Component
-function DurianLogo({ className = 'w-10 h-10' }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 64 64" fill="none" className={className}>
-      <path d="M32 4V12" stroke="#15803d" strokeWidth="5" strokeLinecap="round" />
-      <path
-        d="M32 10L38 15L46 13L48 21L56 24L53 32L58 40L51 46L52 54L43 55L38 61L32 57L26 61L21 55L12 54L13 46L6 40L11 32L8 24L16 21L18 13L26 15L32 10Z"
-        fill="#166534"
-        stroke="#14532d"
-        strokeWidth="2.5"
+function DurianLogo({ className = 'w-11 h-11' }: { className?: string }) {
+    return (
+      <img
+        src="/durianlogo.png"
+        alt="Durian POS"
+        className={`${className} rounded-2xl object-cover shadow-sm shrink-0`}
       />
-      <ellipse cx="25" cy="36" rx="6" ry="10" fill="#facc15" stroke="#ca8a04" strokeWidth="2" />
-      <ellipse cx="39" cy="36" rx="6" ry="10" fill="#facc15" stroke="#ca8a04" strokeWidth="2" />
-    </svg>
-  );
-}
+    );
+  }
 
 export default function SuperAdminDashboard() {
   const [tenants, setTenants] = useState<any[]>([]);
