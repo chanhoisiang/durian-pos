@@ -4,6 +4,8 @@ import {
     toggleWholesalerStatus,
     deleteInactiveWholesalerAccount,
   } from './actions';
+
+  export const dynamic = 'force-dynamic';
   
   export default async function SuperAdminDashboard() {
     const tenants = await getAllWholesalerAccounts();

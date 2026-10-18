@@ -135,6 +135,7 @@ function DurianLogo({ className = 'w-10 h-10' }: { className?: string }) {
 
 export default function DurianPosApp() {
   const supabase = createClient();
+  const [todayStr, setTodayStr] = useState<string>('');
 
   // Auth & Tenant State
   const [user, setUser] = useState<any>(null);
@@ -226,9 +227,10 @@ export default function DurianPosApp() {
     return mode === 'BUY_FARMER' ? v.grades[grade].buy : v.grades[grade].sell;
   }
 
-  useEffect(() => {
-    checkSession();
-  }, []);
+useEffect(() => {
+  setTodayStr(new Date().toLocaleDateString('en-MY'));
+  checkSession();
+}, []);
 
   // Load saved custom grades & master prices per tenant from localStorage
   useEffect(() => {
@@ -582,7 +584,6 @@ export default function DurianPosApp() {
 
   // Compute Today's Profit & Filtered Account Ledger Metrics
   const financialSummary = useMemo(() => {
-    const todayStr = new Date().toLocaleDateString('en-MY');
 
     let todayBuyRm = 0;
     let todaySellRm = 0;
@@ -593,7 +594,7 @@ export default function DurianPosApp() {
 
     decryptedLedger.forEach(({ meta, data }) => {
       const txDateStr = new Date(meta.created_at).toLocaleDateString('en-MY');
-      const isToday = txDateStr === todayStr;
+      const isToday = todayStr ? txDateStr === todayStr : true;
 
       if (meta.tx_type === 'BUY_FARMER') {
         allBuyRm += data.grandTotalRm;
@@ -620,7 +621,7 @@ export default function DurianPosApp() {
       allSellRm,
       allProfitRm: allSellRm - allBuyRm,
     };
-  }, [decryptedLedger]);
+  }, [decryptedLedger, todayStr]);
 
   const cartTotalNetKg = cartItems.reduce(
     (s, i) => s + Math.max(0, i.grossWeightKg - i.basketTareKg),
@@ -1563,10 +1564,10 @@ export default function DurianPosApp() {
                   <tbody className="divide-y divide-slate-200">
                     {decryptedLedger
                       .filter(({ meta }) => {
-                        if (ledgerFilter === 'ALL') return true;
+                        if (ledgerFilter === 'ALL' || !todayStr) return true;
                         return (
                           new Date(meta.created_at).toLocaleDateString('en-MY') ===
-                          new Date().toLocaleDateString('en-MY')
+                          todayStr
                         );
                       })
                       .map(({ meta, data }) => {
